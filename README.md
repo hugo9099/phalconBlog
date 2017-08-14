@@ -2,4 +2,5 @@
 
 #### Production Environment
 
-Sample blog here: [phalconBlog](http://phalconBlog.go99solutions.com).
+Link here: 
+<a href="http://phalconBlog.go99solutions.com" target="_blank">phalconBlog</a>
