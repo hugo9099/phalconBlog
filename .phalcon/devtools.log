@@ -1,0 +1,1 @@
+Sat 12 14:44:35 HMc php: [WARNING] E_WARNING: file_put_contents(/Users/hm909/Sites/phalconBlog/../app/models/Posts.php): failed to open stream: No such file or directory in /Users/hm909/Projects/phalcon-devtools/scripts/Phalcon/Builder/Model.php on line 518
