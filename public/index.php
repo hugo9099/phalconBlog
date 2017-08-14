@@ -1,50 +1,74 @@
 <?php
+
+use Phalcon\Loader;
+use Phalcon\Mvc\View;
+use Phalcon\Mvc\Application;
 use Phalcon\Di\FactoryDefault;
+use Phalcon\Mvc\Url as UrlProvider;
+use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
-error_reporting(E_ALL);
-
-$debug = new \Phalcon\Debug();
-$debug->listen();
-
+// Define some absolute path constants to aid in locating resources
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 
+// Register an autoloader
+$loader = new Loader();
+
+$loader->registerDirs(
+    [
+        APP_PATH . '/controllers/',
+        APP_PATH . '/models/',
+    ]
+);
+
+$loader->register();
+
+// Create a DI
+$di = new FactoryDefault();
+
+// Setup the view component
+$di->set(
+    'view',
+    function () {
+        $view = new View();
+        $view->setViewsDir(APP_PATH . '/views/');
+        return $view;
+    }
+);
+
+// Setup the database service
+$di->set(
+    'db',
+    function () {
+        return new DbAdapter(
+            [
+                'host'     => 'localhost',
+                'username' => '',
+                'password' => '',
+                'dbname'   => 'phalconBlog',
+            ]
+        );
+    }
+);
+
+
+// Setup a base URI so that all generated URIs include the "tutorial" folder
+$di->set(
+    'url',
+    function () {
+        $url = new UrlProvider();
+        $url->setBaseUri('/phalconBlog/');
+        return $url;
+    }
+);
+
+$application = new Application($di);
+
 try {
+    // Handle the request
+    $response = $application->handle();
 
-    /**
-     * The FactoryDefault Dependency Injector automatically registers
-     * the services that provide a full stack framework.
-     */
-    $di = new FactoryDefault();
-
-    /**
-     * Handle routes
-     */
-    include APP_PATH . '/config/router.php';
-
-    /**
-     * Read services
-     */
-    include APP_PATH . '/config/services.php';
-
-    /**
-     * Get config service for use in inline setup below
-     */
-    $config = $di->getConfig();
-
-    /**
-     * Include Autoloader
-     */
-    include APP_PATH . '/config/loader.php';
-
-    /**
-     * Handle the request
-     */
-    $application = new \Phalcon\Mvc\Application($di);
-
-    echo str_replace(["\n","\r","\t"], '', $application->handle()->getContent());
-
+    $response->send();
 } catch (\Exception $e) {
-    echo $e->getMessage() . '<br>';
-    echo '<pre>' . $e->getTraceAsString() . '</pre>';
+    echo 'Exception: ', $e->getMessage();
 }
