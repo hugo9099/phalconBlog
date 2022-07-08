@@ -1,5 +1,5 @@
 # phalconBlog
 
-#### Production Environment
+<!-- #### Production Environment -->
 
-Link here: [phalconBlog](http://phalconBlog.go99solutions.com)
+<!-- Link here: [phalconBlog](http://phalconBlog.go99solutions.com) -->
